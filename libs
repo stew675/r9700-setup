@@ -1,0 +1,2 @@
+sudo dnf install hip-devel hipblas hipblas-devel rocblas rocblas-devel rccl rccl-devel rocwmma-devel
+

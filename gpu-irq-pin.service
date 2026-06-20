@@ -1,0 +1,13 @@
+[Unit]
+Description=Pin AMD GPU PCIe Hardware Interrupts to Dedicated Physical Cores
+After=amd-gpu-tune.service
+Before=multi-user.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/pin_gpu_irqs.sh
+
+[Install]
+WantedBy=multi-user.target
+
