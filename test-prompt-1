@@ -1,0 +1,12 @@
+Write a single HTML file with a full-page canvas and no libraries.
+Simulate a realistic side-view of a moving car as the main subject.
+Keep the car visible in the foreground while the background landscape scrolls continuously to create the feeling that the car is driving forward.
+Use layered scenery for depth: nearby ground, roadside elements, trees, poles, and distant hills or mountains should move at different speeds for a natural parallax effect.
+Animate the wheels spinning realistically and add subtle body motion so the car feels connected to the road.
+Let the environment pass smoothly behind it, with repeating but varied scenery that makes the movement feel believable.
+There should be clouds in the sky, and birds in the distance.
+Depth-wise the distant mountains and hills are further back than the birds.
+Use cinematic lighting and a cohesive sky, such as sunset, dusk, or daylight, to enhance atmosphere.
+The overall motion should feel calm, immersive, and realistic, with a seamless continual animation.
+VERY IMPORTANT: A VERY common coding error is the animating the road markings opposite to the intended direction.
+Double check that the mathematical sign on the road markings animation aligns with the perceived direction of travel of the car.
