@@ -104,22 +104,57 @@ For multi-GPU inference, interrupt handling can become a bottleneck. This setup 
 
 This repository includes a build script optimized for the R9700's RDNA 4 architecture (`gfx1201`) and multi-GPU setups using RCCL.
 
-### Build Script: `build-llama-rocm`
-The script configures CMake with the following key flags:
-- `-DGGML_RPC=1`: Enables Remote Procedure Call for distributed inference.
-- `-DGGML_HIP_RCCL=ON`: Uses ROCm Collective Communications Library for multi-GPU scaling.
-- `-DGPU_TARGETS="gfx1200;gfx1201"`: Compiles kernels for RDNA 4 GPUs.
-- `-DGGML_HIP_ROCWMMA_FATTN=ON`: Enables Flash Attention via ROCWMMA for faster attention layers.
-- `-DGGML_CUDA_NO_PEER_COPY=1`: Disables peer-to-peer memory copy (recommended if P2P is unstable in your topology).
+### Step 1: Clone llama.cpp
+First, clone the official `llama.cpp` repository if you haven't already:
 
-### Usage
-From within the `llama.cpp` source directory:
 ```bash
-# Make sure you are in your llama.cpp root directory
-chmod +x /path/to/r9700-rocm-tuning/build-llama-rocm
-/path/to/r9700-rocm-tuning/build-llama-rocm
+git clone https://github.com/ggml-org/llama.cpp.git
+cd llama.cpp
 ```
 
+### Step 2: Build with ROCm Optimizations
+You have two options: use the provided script or run the commands manually.
+
+#### Option A: Using the provided script
+Copy the `build-llama-rocm` script from this repository into your `llama.cpp` directory and execute it:
+
+```bash
+# Assuming you are in the llama.cpp directory
+cp /path/to/r9700-setup/build-llama-rocm ./
+chmod +x build-llama-rocm
+./build-llama-rocm
+```
+
+#### Option B: Manual Build Commands
+If you prefer to run the commands manually, execute the following inside your `llama.cpp` directory. This configures CMake with flags for RPC, RCCL (multi-GPU), RDNA 4 targets (`gfx1201`), and Flash Attention via ROCWMMA.
+
+```bash
+rm -rf build
+
+HIPCXX="$(hipconfig -l)/clang" HIP_PATH="$(hipconfig -R)" cmake -S . -B build \
+  -DGGML_RPC=1 \
+  -DGGML_HIP=ON \
+  -DGGML_NATIVE=1 \
+  -DGGML_HIP_RCCL=ON \
+  -DCMAKE_C_COMPILER=clang \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DGGML_CUDA_NO_PEER_COPY=1 \
+  -DGGML_HIP_ROCWMMA_FATTN=ON \
+  -DCMAKE_CXX_COMPILER=clang++ \
+  -DGPU_TARGETS="gfx1200;gfx1201" \
+  -DCMAKE_INSTALL_RPATH="$ORIGIN" \
+  -DAMDGPU_TARGETS="gfx1200;gfx1201" \
+  -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON
+
+cmake --build build --config Release -j $(nproc) -- VERBOSE=1
+```
+
+### Key Build Flags Explained
+- `-DGGML_RPC=1`: Enables Remote Procedure Call for distributed inference.
+- `-DGGML_HIP_RCCL=ON`: Uses ROCm Collective Communications Library for multi-GPU scaling.
+- `-DGPU_TARGETS="gfx1200;gfx1201"`: Compiles kernels specifically for RDNA 4 GPUs (R9700).
+- `-DGGML_HIP_ROCWMMA_FATTN=ON`: Enables Flash Attention via ROCWMMA for faster attention layers.
+- `-DGGML_CUDA_NO_PEER_COPY=1`: Disables peer-to-peer memory copy (recommended if P2P is unstable in your topology).
 ---
 
 ## vLLM Setup
