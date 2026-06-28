@@ -1,19 +1,6 @@
 #!/bin/bash
 
-#cd /home/stew675/llama.cpp || exit 1
-
 rm -rf build
-#HIPCXX="$(hipconfig -l)/clang" HIP_PATH="$(hipconfig -R)" cmake -S . -B build \
-#  -DGGML_RPC=1 \
-#  -DGGML_HIP=ON \
-#  -DGGML_NATIVE=1 \
-#  -DGPU_TARGETS=gfx1201 \
-#  -DCMAKE_C_COMPILER=clang \
-#  -DCMAKE_BUILD_TYPE=Release \
-#  -DGGML_HIP_ROCWMMA_FATTN=ON \
-#  -DCMAKE_CXX_COMPILER=clang++ \
-#  -DCMAKE_INSTALL_RPATH="\$ORIGIN" \
-#  -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON
 
 HIPCXX="$(hipconfig -l)/clang" HIP_PATH="$(hipconfig -R)" cmake -S . -B build \
   -DGGML_RPC=1 \
